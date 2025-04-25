@@ -1,0 +1,48 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.tsbuildinfo
+node_modules
+/build
+/.cache
+/coverage
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.history
+
+*storybook.log
+
+# Strapi specifics
+/src/admin/app.example.js
+/src/admin/app.js
+!/src/admin/app.js.prebuilt
+/src/plugins/**/admin/src
+/src/plugins/**/server/src
+/public/uploads/!(*.gitkeep)
+
+# Misc
+*.pem
+
+# Environment variables
+.env
+
+# Yarn PnP
+/.pnp
+.pnp.js

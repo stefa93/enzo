@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_layout_homepage_cards",
+  "info": {
+    "displayName": "Homepage Card",
+    "icon": "address-card",
+    "description": "A card component for the homepage, containing a title, image, and link."
+  },
+  "options": {},
+  "attributes": {
+    "cardTitle": {
+      "type": "string",
+      "required": true
+    },
+    "cardImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "cardLink": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

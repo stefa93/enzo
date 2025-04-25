@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+"playwright": {
+"command": "cmd",
+"args": ["/c", "npx", "-y", "@executeautomation/playwright-mcp-server"],
+      "alwaysAllow": [
+        "browser_navigate",
+        "browser_go_back",
+        "browser_go_forward",
+        "browser_choose_file",
+        "browser_snapshot",
+        "browser_click",
+        "browser_hover",
+        "browser_type",
+        "browser_select_option",
+        "browser_take_screenshot",
+        "browser_press_key",
+        "browser_wait",
+        "browser_save_as_pdf",
+        "browser_close"
+      ]
+    },
+    "Context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "Framelink Figma MCP": {
+      "command": "cmd",
+      "args": ["npx","-y", "figma-developer-mcp", "--figma-api-key=FIGMA_TOKEN_REMOVED", "--stdio"]
+    }
+  }
+}

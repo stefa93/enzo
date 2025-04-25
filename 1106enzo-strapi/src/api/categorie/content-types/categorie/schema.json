@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "categories",
+  "info": {
+    "singularName": "categorie",
+    "pluralName": "categories",
+    "displayName": "Categorie",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "naam": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "kleurcode": {
+      "type": "string"
+    },
+    "nieuwsberichten": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::nieuwsbericht.nieuwsbericht",
+      "mappedBy": "categorieen"
+    }
+  }
+}

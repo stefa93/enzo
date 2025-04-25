@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "nieuwsberichten",
+  "info": {
+    "singularName": "nieuwsbericht",
+    "pluralName": "nieuwsberichten",
+    "displayName": "Nieuwsbericht",
+    "description": "Nieuwsberichten en evenementen voor de buurtkrant"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "titel": {
+      "type": "string",
+      "required": true
+    },
+    "samenvatting": {
+      "type": "text"
+    },
+    "inhoud": {
+      "type": "richtext",
+      "required": true
+    },
+    "afbeelding": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "auteur": {
+      "type": "string"
+    },
+    "publicatiedatum": {
+      "type": "datetime",
+      "required": true
+    },
+    "categorieen": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::categorie.categorie",
+      "inversedBy": "nieuwsberichten"
+    }
+  }
+}
