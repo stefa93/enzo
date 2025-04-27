@@ -1,7 +1,6 @@
-// src/components/layout/BottomNavigation.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Newspaper, Store, Wrench, User } from 'lucide-react';
+import { Home, Newspaper } from 'lucide-react';
 import { Button } from '../ui/button'; // Import the Button component
 import { cn } from '@/lib/utils';
 
