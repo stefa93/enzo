@@ -59,7 +59,7 @@ export function HomeScreen() {
       >
         {/* App Name */}
         <div className="absolute top-8 left-4">
-          <h2 className="text-white text-lg font-medium">1106enZO</h2>
+          <h2 className="text-white text-lg font-bold">1106enZO</h2>
         </div>
 
         {/* Main Text - Dynamic */}
@@ -74,7 +74,7 @@ export function HomeScreen() {
       <main className="flex-grow p-4 w-full max-w-6xl mx-auto">
         {isLoading && <p className="text-center">Homepage wordt geladen...</p>}
         {error && <p className="text-center text-red-600">{error}</p>}
-        
+
         {!isLoading && !error && homepageData && (
           <>
             {homepageData.cardSectionTitle && (
@@ -85,11 +85,11 @@ export function HomeScreen() {
                 <Link to={card.link} key={card.id} className="block group">
                   <Card className="overflow-hidden rounded-3xl border-none shadow-none hover:shadow-md transition-shadow duration-200">
                     <CardContent className="p-0 relative">
-                      <AspectRatio ratio={1/1}>
+                      <AspectRatio ratio={1 / 1}>
                         <img
                           src={card.imageUrl || DEFAULT_CARD_IMAGE} // Use fetched or default image
                           alt={card.title}
-                          className="object-cover w-full h-full bg-gray-200" // Added fallback bg
+                          className="object-cover w-full h-full bg-gray-200 rounded-3xl" // Added fallback bg and rounding
                         />
                         <div className="absolute inset-0 flex items-end justify-start p-4 bg-gradient-to-t from-black/60 to-transparent">
                           <h3 className="text-white text-lg font-semibold drop-shadow">{card.title}</h3>
@@ -102,9 +102,9 @@ export function HomeScreen() {
             </div>
           </>
         )}
-         {!isLoading && !error && !homepageData && (
-             <p className="text-center">Geen homepage gegevens gevonden.</p>
-         )}
+        {!isLoading && !error && !homepageData && (
+          <p className="text-center">Geen homepage gegevens gevonden.</p>
+        )}
       </main>
 
       <BottomNavigation />

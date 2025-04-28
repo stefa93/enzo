@@ -337,53 +337,69 @@ const seedHomepage = async () => {
   const parsed = await parseMarkdownFile(filePath);
   if (!parsed) return;
   const { frontmatter } = parsed;
-  let heroImageId = null;
+
+  // Upload Hero Image and get ID
+  let finalHeroImageId = null;
   if (frontmatter.heroBackgroundImage) {
-    heroImageId = await uploadImage(frontmatter.heroBackgroundImage);
-     if (!heroImageId) {
+    const heroImageObject = await uploadImage(frontmatter.heroBackgroundImage);
+     if (heroImageObject && heroImageObject.id) {
+         finalHeroImageId = heroImageObject.id; // Extract the ID
+     } else {
        warn(`Could not upload or find hero image from URL "${frontmatter.heroBackgroundImage}". Homepage might be incomplete.`);
      }
   } else {
        warn(`heroBackgroundImage is missing in homepage.md`);
   }
+
+  // Process Card Components
   const cardComponents = [];
   if (frontmatter.cards && Array.isArray(frontmatter.cards)) {
     for (const card of frontmatter.cards) {
-      let cardImageId = null;
+      let finalCardImageId = null; // Variable to hold the final ID
       if (card.cardImage) {
-        cardImageId = await uploadImage(card.cardImage);
-         if (!cardImageId) {
+        const cardImageObject = await uploadImage(card.cardImage);
+         if (cardImageObject && cardImageObject.id) {
+            finalCardImageId = cardImageObject.id; // Extract the ID
+         } else {
             warn(`Could not upload or find card image from URL "${card.cardImage}" for card "${card.cardTitle}". Component might be incomplete.`);
          }
       } else {
           warn(`cardImage is missing for card "${card.cardTitle}" in homepage.md`);
       }
-       if (card.cardTitle && card.cardLink && cardImageId) {
+
+      // Use the extracted ID in the check and component creation
+       if (card.cardTitle && card.cardLink && finalCardImageId) { // Check finalCardImageId
           cardComponents.push({
             __component: 'layout.homepage-card',
             cardTitle: card.cardTitle,
             cardLink: card.cardLink,
-            cardImage: [cardImageId],
+            cardImage: finalCardImageId, // Use the ID directly
           });
       } else {
-         warn(`Skipping card component "${card.cardTitle || 'Untitled'}" due to missing required fields (Title, Link, or Image Upload failed).`);
+         warn(`Skipping card component "${card.cardTitle || 'Untitled'}" due to missing required fields (Title, Link, or Image Upload failed/missing).`);
       }
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100)); // Keep delay if needed
     }
   }
+
+  // Prepare and send payload with extracted IDs
   try {
     const payload = {
       heroTitle: frontmatter.heroTitle,
-      heroBackgroundImage: heroImageId ? [heroImageId] : [],
+      heroBackgroundImage: finalHeroImageId, // Use the ID directly, or null
       cardSectionTitle: frontmatter.cardSectionTitle || null,
-      cards: cardComponents,
-      publishedAt: new Date().toISOString(),
+      // Remove __component key from cards as it causes validation error in v5
+      cards: cardComponents.map(({ __component, ...rest }) => rest),
+      publishedAt: new Date().toISOString(), // Ensure it's published
     };
+
      try {
-        const updated = await makeRequest('PUT', '/homepage', payload);
+        // Assuming '/homepage' refers to a SINGLE type, the endpoint structure might be just /api/homepage
+        // Adjust endpoint if necessary based on Strapi config
+        const updated = await makeRequest('PUT', '/homepage', payload); // Revert to /homepage as base URL likely includes /api/
         log(`Updated homepage (ID: ${updated.data.id})`);
     } catch (putErr) {
-        error(`Failed to PUT homepage data. Check if the single type exists or if there are validation errors.`, putErr);
+        error(`Failed to PUT homepage data. Check endpoint, permissions, or validation errors. Payload: ${JSON.stringify(payload)}`, putErr);
     }
   } catch (homeErr) {
     error('Failed to prepare or send homepage data', homeErr);

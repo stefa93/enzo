@@ -1,6 +1,8 @@
 // src/api/strapi/newsService.ts
 import { strapiFetch } from "./client";
 import { FrontendItem } from "../../types/features/news";
+import { getStrapiImageUrl } from "../utils/strapiUtils";
+import type { StrapiComponentMedia } from "../../types/strapi/media";
 
 // Flat v5 structure for news content fields
 type NewsContentFields = {
@@ -58,11 +60,10 @@ export function mapStrapiItemToFrontend(item: NewsContentFields | null | undefin
         verhalen: 'story',
     } as const;
     const category = rawCategory && newsCategoryMap[rawCategory as keyof typeof newsCategoryMap] ? newsCategoryMap[rawCategory as keyof typeof newsCategoryMap] : 'news';
-    // Map image URL
-    let imageUrl: string | undefined = undefined;
-    if (item.afbeelding) {
-        imageUrl = item.afbeelding.formats?.medium?.url || item.afbeelding.url;
-    }
+    // Use getStrapiImageUrl to get the full URL, preferring 'medium' format
+    // Cast type as StrapiComponentMedia as our populated fields are sufficient
+    const imageUrl = getStrapiImageUrl(item.afbeelding as unknown as StrapiComponentMedia, 'medium');
+
     // Construct FrontendItem
     const frontendItem: FrontendItem = {
         id: `s${item.id}`,

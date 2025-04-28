@@ -1,3 +1,4 @@
+// src/components/layout/BottomNavigation.tsx
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Newspaper } from 'lucide-react';
