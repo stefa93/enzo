@@ -1,13 +1,17 @@
-export default () => ({
+export default ({ env }) => ({
   upload: {
     config: {
-      provider: 'local',
+      provider: 'cloudinary',
       providerOptions: {
-        localServer: {
-          maxage: 300000
-        },
+        cloud_name: env('CLOUDINARY_NAME'),
+        api_key: env('CLOUDINARY_KEY'),
+        api_secret: env('CLOUDINARY_SECRET'),
       },
-      sizeLimit: 10 * 1024 * 1024, // 10MB in bytes
+      actionOptions: {
+        upload: {},
+        uploadStream: {},
+        delete: {},
+      },
     },
   },
 });
