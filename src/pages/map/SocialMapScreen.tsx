@@ -193,7 +193,7 @@ export function SocialMapScreen() {
             <div className="p-3 pt-12 space-y-3 bg-background z-20 relative shadow-sm"> {/* Added shadow */}
                  {/* Back, Search, View Toggle */}
                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="bg-white rounded-full shadow-md h-9 w-9 flex-shrink-0" onClick={() => navigate(-1)}>
+                    <Button variant="ghost" size="icon" className="bg-white rounded-full shadow-md h-9 w-9 flex-shrink-0" onClick={() => navigate('/')}>
                         <ArrowLeft className="h-5 w-5 text-gray-700" />
                     </Button>
                     <div className="relative flex-grow">

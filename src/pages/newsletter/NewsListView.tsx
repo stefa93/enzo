@@ -4,8 +4,10 @@ import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
-import { Search, ArrowLeft, Heart, MessageCircle, Bookmark, MoreHorizontal, X, Calendar, User } from 'lucide-react';
-import { BottomNavigation } from '@/components/layout/BottomNavigation'; 
+import { Search, MessageCircle, Bookmark, MoreHorizontal, X, Calendar, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { BottomNavigation } from '@/components/layout/BottomNavigation';
+import { PageHeader } from '@/components/layout/PageHeader'; 
 import React, { useState, useMemo } from 'react'; 
 import type { FrontendItem } from "@/lib/strapi";
 
@@ -20,6 +22,7 @@ const formatDate = (isoDateString: string) => {
 };
 
 export const NewsListView: React.FC<NewsListViewProps> = ({ items, onSelectItem }) => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'news' | 'event' | 'story'>('all');
 
@@ -45,15 +48,11 @@ export const NewsListView: React.FC<NewsListViewProps> = ({ items, onSelectItem 
     <div className="bg-background font-sans min-h-screen flex flex-col w-full">
 
       <div className="flex-grow w-full max-w-6xl mx-auto flex flex-col">
-        <header className="flex items-center justify-between p-4 border-b flex-shrink-0">
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <h1 className="font-semibold text-lg">Buurtkrant</h1>
-          <Button variant="ghost" size="icon">
-            <Heart className="h-5 w-5" />
-          </Button>
-        </header>
+        <PageHeader 
+          title="Buurtkrant" 
+          onBack={() => navigate('/')} 
+          rightNode={null}
+        />
 
         <div className="p-4 space-y-4 flex-shrink-0">
           <div className="relative">

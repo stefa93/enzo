@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Bookmark, Upload, SquareArrowUp, Calendar } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { BottomNavigation } from '@/components/layout/BottomNavigation';
+import { PageHeader } from '@/components/layout/PageHeader';
 import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown
 import type { FrontendItem } from '@/lib/strapi'; // Import FrontendItem type
 
@@ -22,6 +23,32 @@ interface NewsDetailViewProps {
 }
 
 export const NewsDetailView: React.FC<NewsDetailViewProps> = ({ item, goBack }) => {
+
+  const handleShare = async () => {
+    const shareData = {
+      title: item.title,
+      text: item.description || `Bekijk dit artikel: ${item.title}`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        console.log('Artikel succesvol gedeeld');
+      } catch (error) {
+        console.error('Fout bij delen:', error);
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link gekopieerd naar klembord!'); // Simple alert, consider a toast notification for better UX
+      } catch (error) {
+        console.error('Kon link niet kopiëren:', error);
+        alert('Kon link niet kopiëren.');
+      }
+    }
+  };
 
   // If item data is not yet loaded or not found, show a loading/error message
   if (!item) {
@@ -43,21 +70,20 @@ export const NewsDetailView: React.FC<NewsDetailViewProps> = ({ item, goBack }) 
   return (
     // Increased large screen max-width to match HomeScreen
     <div className="bg-background font-sans max-w-md mx-auto lg:max-w-6xl flex flex-col min-h-screen">
-       {/* Header - max-width is now handled by the parent div on large screens */}
-       <header className="flex items-center justify-between p-4 border-b sticky top-0 bg-background z-10">
-        <Button variant="ghost" size="icon" onClick={goBack}>
-          <ArrowLeft className="h-5 w-5" />
-          <span className="sr-only">Terug</span>
-        </Button>
-        <div className="flex items-center space-x-2">
+       <PageHeader 
+        title="Buurtkrant" 
+        onBack={goBack}
+        rightNode={
+          <div className="flex items-center space-x-2">
             <Button variant="ghost" size="icon">
-                <Bookmark className="h-5 w-5" />
+              <Bookmark className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon">
-                <SquareArrowUp className="h-5 w-5" /> 
+            <Button variant="ghost" size="icon" onClick={handleShare}>
+              <SquareArrowUp className="h-5 w-5" />
             </Button>
-        </div>
-      </header>
+          </div>
+        }
+      />
 
       {/* Content */}
       <div className="flex-grow">
@@ -116,10 +142,10 @@ export const NewsDetailView: React.FC<NewsDetailViewProps> = ({ item, goBack }) 
  
             {/* Action Buttons */}
             <div className="space-y-3 pt-4">
-                 <Button className="w-full">
+                 <Button className="w-full" onClick={handleShare}>
                     <Upload className="mr-2 h-4 w-4" /> Deel dit artikel
                  </Button>
-                 <Button variant="outline" className="w-full">
+                 <Button variant="outline" className="w-full" onClick={goBack}>
                     <ArrowLeft className="mr-2 h-4 w-4" /> Ga terug
                  </Button>
             </div>

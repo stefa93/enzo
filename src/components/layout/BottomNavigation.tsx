@@ -15,7 +15,7 @@ const navItems = [
 export function BottomNavigation() {
   const location = useLocation();
   const [isHidden, setIsHidden] = useState(false);
-  const lastScrollY = useRef(0);
+  const lastScrollY = useRef(window.scrollY);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,6 +30,13 @@ export function BottomNavigation() {
       }
     };
 
+        // Initialize lastScrollY with the current scroll position when the listener is added
+    // This was already done by setting the initial value of the ref, 
+    // but we can ensure it's up-to-date if the component remounts or effect re-runs for other reasons.
+    // However, the ref's initial value should be sufficient if the effect only runs once.
+    // Let's ensure the ref is initialized with the current scrollY directly.
+    // The previous change to useRef(window.scrollY) handles this.
+    // No change needed here if the ref is initialized correctly.
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
