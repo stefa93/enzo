@@ -12,7 +12,7 @@ import {
 
 // Default image if Strapi doesn't provide one
 const DEFAULT_CARD_IMAGE = "https://images.unsplash.com/photo-1617957689233-5ae6f64f0b8b?q=80&w=300&h=300&fit=crop"; // Generic placeholder
-const DEFAULT_HERO_IMAGE = "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?q=80&w=1920"; // Default hero
+const DEFAULT_HERO_IMAGE = "https://noviton.nl/wp-content/uploads/2024/07/Community-campus-Amsterdam-3.png"; // Default hero
 
 export function HomeScreen() {
   const [homepageData, setHomepageData] = useState<FrontendHomepageContent | null>(null);
