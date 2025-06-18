@@ -1,55 +1,62 @@
-// src/api/utils/strapiUtils.ts
 import { STRAPI_URL } from "../strapi/client";
 import { StrapiComponentMedia, StrapiImageFormat, StrapiMedia } from "../../types/strapi/media";
 
 /**
- * Gets the full image URL from Strapi media data (handles nested and component media).
+ * Gets the full image URL from Strapi media data.
  * Prefers a specific format or falls back to original URL.
+ * Correctly handles absolute URLs from providers like Cloudinary.
  */
 export function getStrapiImageUrl(
     media: StrapiMedia | StrapiComponentMedia | undefined | null,
-    format?: 'thumbnail' | 'small' | 'medium' | 'large' // Be explicit about format keys
+    format?: 'thumbnail' | 'small' | 'medium' | 'large'
 ): string | undefined {
     if (!media) {
         return undefined;
     }
 
-    let url: string | undefined;
-    let formats: Record<string, StrapiImageFormat> | null | undefined;
+    let baseImageUrl: string | undefined;
+    let availableFormats: Record<string, StrapiImageFormat> | null | undefined;
 
-    // Check for the nested 'data.attributes' structure (StrapiMedia)
+    // Check for the nested 'data.attributes' structure (StrapiMedia from relations)
     if ('data' in media && media.data?.attributes) {
         const attrs = media.data.attributes;
-        url = attrs.url;
-        formats = attrs.formats;
+        baseImageUrl = attrs.url;
+        availableFormats = attrs.formats;
     }
-    // Check for the flatter structure (StrapiComponentMedia or potentially flattened relation)
+    // Check for the flatter structure (StrapiComponentMedia from components, or already flattened relation)
     else if ('url' in media && media.url) {
-        // This assumes media IS StrapiComponentMedia or a similar flat structure
-        const componentMedia = media as StrapiComponentMedia; // Cast for type safety
-        url = componentMedia.url;
-        formats = componentMedia.formats;
+        const componentMedia = media as StrapiComponentMedia;
+        baseImageUrl = componentMedia.url;
+        availableFormats = componentMedia.formats;
     }
 
-    // If no base URL found, return undefined
-    if (!url) {
+    // Determine the URL to use (preferring the specified format)
+    let imageUrlToUse = baseImageUrl;
+    if (format && availableFormats?.[format]?.url) {
+        imageUrlToUse = availableFormats[format]?.url;
+    }
+
+    if (!imageUrlToUse) {
         return undefined;
     }
 
-    // Try to get the formatted URL
-    if (format && formats?.[format]?.url) {
-        return `${STRAPI_URL}${formats[format]?.url}`;
+    // If the URL is already absolute (e.g., from Cloudinary), return it directly.
+    // Otherwise, prepend the STRAPI_URL (for locally served files starting with '/').
+    if (imageUrlToUse.startsWith('http://') || imageUrlToUse.startsWith('https://')) {
+        return imageUrlToUse;
+    } else if (imageUrlToUse.startsWith('/')) {
+        return `${STRAPI_URL}${imageUrlToUse}`;
+    } else {
+        // Fallback for unexpected URL formats, potentially log a warning.
+        // This case should ideally not be hit with properly configured providers.
+        console.warn(`[getStrapiImageUrl] Received URL in unexpected format: ${imageUrlToUse}`);
+        // As a last resort, treat as a relative path to STRAPI_URL
+        return `${STRAPI_URL}/${imageUrlToUse}`;
     }
-
-    // Fallback to the original URL
-    return `${STRAPI_URL}${url}`;
 }
 
 /**
  * Generic function to map a category name from a Strapi DataItem using a provided mapping object.
- * @param dataItem - The Strapi DataItem containing category attributes
- * @param categoryMap - An object mapping lowercased category names to output values
- * @param defaultValue - The default value to return if no match is found
  */
 export function mapStrapiCategory<Attrs extends { naam?: string }, T extends string>(
     dataItem: { attributes?: Attrs } | undefined | null,
